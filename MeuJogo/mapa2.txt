@@ -1,0 +1,61 @@
+ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
+Z                            Z
+Z  F         D               Z
+ZZZZZZZZZZZZZH               Z
+Z            H               Z
+Z            H               Z
+Z    D       S         E     Z
+Z    HZZZZZZZZZZZZZZZZZZZZ   Z
+Z    H                       Z
+Z    H                       Z
+Z    S            D          Z
+Z    ZZZZZZ ZZZZZZH          Z
+Z                 H          Z
+Z                 H          Z
+Z  D    E         S          Z
+Z  HZZZZZZZ ZZZZZZZ          Z
+Z  H                         Z
+Z  H                         Z
+Z  S           E        D    Z
+Z  ZZZZZZZZZZZZZZZZZZZZZH    Z
+Z                       H    Z
+Z                       H    Z
+Z    D                  S    Z
+Z    HZZZZZZZZ ZZZZZZZZZZ    Z
+Z    H                       Z
+Z    H                       Z
+Z    H                       Z
+Z    S       DP              Z
+ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
+ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
+
+    "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ",
+    "Z                            Z",
+    "Z  F         D               Z",
+    "ZZZZZZZZZZZZZH               Z",
+    "Z            H               Z",
+    "Z            H               Z",
+    "Z    D       S         E     Z",
+    "Z    HZZZZZZZZZZZZZZZZZZZZ   Z",
+    "Z    H                       Z",
+    "Z    H                       Z",
+    "Z    S            D          Z",
+    "Z    ZZZZZZ ZZZZZZH          Z",
+    "Z                 H          Z",
+    "Z                 H          Z",
+    "Z  D    E         S          Z",
+    "Z  HZZZZZZZ ZZZZZZZ          Z",
+    "Z  H                         Z",
+    "Z  H                         Z",
+    "Z  S           E        D    Z",
+    "Z  ZZZZZZZZZZZZZZZZZZZZZH    Z",
+    "Z                       H    Z",
+    "Z                       H    Z",
+    "Z    D                  S    Z",
+    "Z    HZZZZZZZZ ZZZZZZZZZZ    Z",
+    "Z    H                       Z",
+    "Z    H                       Z",
+    "Z    H                       Z",
+    "Z    S       DP              Z",
+    "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ",
+    "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"
