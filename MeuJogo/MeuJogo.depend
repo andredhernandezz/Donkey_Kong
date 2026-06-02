@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1778801216 source:c:\projetos\meujogo\jogo.c
+1779114950 source:c:\projetos\meujogo\jogo.c
 	"raylib.h"
 	"button.h"
 
-1778795169 c:\projetos\meujogo\button.h
+1779055899 c:\projetos\meujogo\button.h
 	"raylib.h"
 

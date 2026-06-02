@@ -21,6 +21,14 @@ int main(void)
     // carregando a imagem da capa do menu como a variavel background
     Texture2D background = LoadTexture("graphics/capa_menu.png");
 
+    // TESTE
+
+    // APENAS TEXTE MARIO
+    Texture2D spriteMario = LoadTexture("graphics/mario.pixelart.png");
+
+    // TESTE
+
+
     Botao btnNovo;
     btnNovo.rect = (Rectangle){ BOTAO_X, POS_Y_NOVO_JOGO, LARGURA_BOTAO, ALTURA_BOTAO };
     btnNovo.texture = LoadTexture("graphics/novo_jogo_menu.png");
@@ -62,10 +70,16 @@ int main(void)
                 break;
 
             case TELA_JOGO:
-                //
-                //
-                //
-                //
+                DrawText("VOCE ESTA NO JOGO! ('M' de Menu para voltar)", 100, 300, 20, RAYWHITE);
+
+                // TESTE MARIO TESTE MARIO TESTE MARIO TESTE MARIO TESTE MARIO
+                int colunaAleatoria = 15;
+                int linhaAleatoria = 20;
+
+                // Desenha o Mario multiplicando a grade pelo tamanho de 25 pixels
+                DrawTexture(spriteMario, colunaAleatoria * TILE_SIZE, linhaAleatoria * TILE_SIZE, WHITE);
+                // --------------------------------------
+
                 break;
 
             case TELA_RANKING:
@@ -113,7 +127,7 @@ int main(void)
 
 
     }
-
+    UnloadTexture(spriteMario);
     UnloadTexture(background);
     UnloadTexture(btnNovo.texture);
     UnloadTexture(btnRanking.texture);
