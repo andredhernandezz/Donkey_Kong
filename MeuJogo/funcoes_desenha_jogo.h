@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include "constantes.h"
 
+
 // desenha o jogo
 void desenharMapa(char mapa[LINHAS][COLUNAS]) {
 
@@ -45,11 +46,8 @@ void desenharMapa(char mapa[LINHAS][COLUNAS]) {
 }
 
 // desenha o player
-void desenharPlayer(int linha, int coluna) {
-    int x = coluna * TILE_SIZE;
-    int y = linha * TILE_SIZE;
-
-    DrawRectangle(x, y, TILE_SIZE, TILE_SIZE, BEIGE);
+void desenharPlayer(int linha, int coluna, Texture2D sprite) {
+    DrawTexture(sprite, coluna * TILE_SIZE, linha * TILE_SIZE, WHITE);
 }
 
 // desenha os inimigos na tela

@@ -128,7 +128,7 @@ int main(void)
                 UnloadTexture(btnNovo.texture);
                 UnloadTexture(btnRanking.texture);
                 UnloadTexture(btnSair.texture);
-                CloseWindow();
+                return 0;
             }
             break;
 
@@ -216,6 +216,14 @@ int main(void)
             // TODO: lógica dos botões de pausa (Continuar / Menu / Sair)
             if (IsKeyPressed(KEY_TAB)) telaAtual = TELA_JOGO;
             if (IsKeyPressed(KEY_M))   telaAtual = TELA_MENU;
+            if (IsKeyPressed(KEY_S)){
+                UnloadTexture(spriteMario);
+                UnloadTexture(background);
+                UnloadTexture(btnNovo.texture);
+                UnloadTexture(btnRanking.texture);
+                UnloadTexture(btnSair.texture);
+                return 0;
+            }
             break;
 
         case TELA_RANKING:
@@ -244,7 +252,7 @@ int main(void)
         case TELA_JOGO:
             ClearBackground(BLUE);
             desenharMapa(mapaAtual);
-            desenharPlayer(playerLinha, playerColuna);
+            desenharPlayer(playerLinha, playerColuna, spriteMario);
             desenharInimigos(inimigoLinha, inimigoColuna, totalInimigos);
 
             if (trocandoFase)
@@ -267,15 +275,15 @@ int main(void)
         case TELA_PAUSA:
             // TODO: desenhar botões de pausa
             ClearBackground(BLACK);
-            DrawText("PAUSADO", COLUNAS * TILE_SIZE / 2 - 80, LINHAS * TILE_SIZE / 2 - 40, 40, WHITE);
-            DrawText("TAB - Continuar   M - Menu", COLUNAS * TILE_SIZE / 2 - 160, LINHAS * TILE_SIZE / 2 + 20, 20, LIGHTGRAY);
+            DrawText("PAUSADO", 275, 150, 40, WHITE);
+            DrawText("TAB - Continuar\nM - Menu\nS - Sair\n", COLUNAS * TILE_SIZE / 2 - 160, LINHAS * TILE_SIZE / 2 + 20, 20, LIGHTGRAY);
             break;
 
         case TELA_RANKING:
             // TODO: exibir placar.bin
             DrawText("RANKING", 100, 200, 40, GOLD);
             DrawText("(em breve)", 100, 260, 20, LIGHTGRAY);
-            DrawText("M - Voltar ao menu", 100, 350, 20, RAYWHITE);
+            DrawText("M - Voltar ao menu", 100, 350, 40, RAYWHITE);
             break;
         }
         EndDrawing();
