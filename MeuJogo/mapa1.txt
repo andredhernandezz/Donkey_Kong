@@ -1,30 +1,30 @@
-    "ZZZZZZZZZZZZZZHZZZZZZZZZZZZZZZ",
-    "Z       D     S         D    Z",
-    "Z ZZZZZZHZZZZZZZZZZZZZZZHZZZ Z",
-    "Z       H               H    Z",
-    "Z       S  E  D         H    Z",
-    "Z     ZZZZZZZZHZ        H    Z",
-    "Z             H         H    Z",
-    "Z    D        S         S    Z",
-    "Z   ZHZZZZZZZZZZZZZZZZZZZZ   Z",
-    "Z    H                       Z",
-    "Z    H                       Z",
-    "Z    S      E         D      Z",
-    "Z  ZZZZZZZZZZZZZZZZZZZHZZZZZ Z",
-    "Z                     H      Z",
-    "Z                     H      Z",
-    "Z     E      D   D    S      Z",
-    "Z    ZZZZZZZZHZZZHZZZZZZZ    Z",
-    "Z            H   H           Z",
-    "Z     D   E  S   H           Z",
-    "Z    ZHZZZZZZZ   S       D   Z",
-    "Z     H         ZZZZZZZZZHZ  Z",
-    "Z     H                  H   Z",
-    "Z     H                  H   Z",
-    "Z     S E     D       D  S   Z",
-    "Z   ZZZZZZZZZZHZZZZZZZHZZZZ  Z",
-    "Z             H       H      Z",
-    "Z             H       H      Z",
-    "Z   P         S       S      Z",
-    "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ",
-    "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"
+BBBBBBBBBBBBBHBBBBBBBBBBBBBBBB
+B.......D....S..........D....B
+B.ZZZZZZHZZZZZZZZZZZZZZZHZZZ.B
+B.......H...............H....B
+B.......S..E..D.........H....B
+B.....ZZZZZZZZHZ........H....B
+B.............H.........H....B
+B....D........S.........S....B
+B...ZHZZZZZZZZZZZZZZZZZZZZ...B
+B....H.......................B
+B....H.......................B
+B....S..............E.D......B
+B..ZZZZZZZZZZZZZZZZZZZHZZZZZ.B
+B.....................H......B
+B.....................H......B
+B.....E....D.....D....S......B
+B...ZZZZZZZHZZZZZHZZZZZZZ....B
+B..........H.....H...........B
+B..E..D....S.....H...........B
+B.ZZZZHZZZZZ.....S.......D...B
+B.....H..........ZZZZZZZZHZZ.B
+B.....H..................H...B
+B.....H..................H...B
+B.....S.E.....D.......D..S...B
+B..ZZZZZZZZZZZHZZZZZZZHZZZZ..B
+B.............H.......H......B
+B.............H.......H......B
+B...P.........S.......S......B
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB

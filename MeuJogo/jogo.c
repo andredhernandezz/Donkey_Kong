@@ -1,14 +1,20 @@
 #include "raylib.h"
 #include "button.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include "funcoes_desenha_jogo.h"
+#include "funcoes_fase.h"
+#include "funcoes_inimigos.h"
+#include "funcoes_mapa.h"
+#include "funcoes_movimentacao_jogador.h"
+#include "constantes.h"
 
-#define LINHAS 30
-#define COLUNAS 30
-#define TILE_SIZE 25
-
-typedef enum {
+typedef enum
+{
     TELA_MENU,
     TELA_JOGO,
-    TELA_RANKING
+    TELA_PAUSA,
+    TELA_RANKING,
 } EstadoJogo;
 
 int main(void)
@@ -26,21 +32,55 @@ int main(void)
     // APENAS TEXTE MARIO
     Texture2D spriteMario = LoadTexture("graphics/mario.pixelart.png");
 
+
     // TESTE
+    char mapa1[LINHAS][COLUNAS]; // matriz para carregar o mapa 1
+    char mapa2[LINHAS][COLUNAS]; // matriz para carregar o mapa 2
+    char (*mapaAtual)[COLUNAS]; // mapa da fase atual
+    mapaAtual = mapa1;
+
+    int playerLinha = 0, playerColuna = 0; // indices da posicao do player
+    int conta_frames_gravidade = 0; // auxiliar para calcular a velocidade da grav.
+    int conta_frames_inimigo = 0; // auxiliar para calcular a velocidade dos inimigos.
+    int gameOver = 0; // flag que indica fim de jogo ou nao
+    int timerGameOver = 0; // timer de duracao da tela de game over
+    int ganhou=0; // flag que indica se o player ganhou
+    int timerGanhou = 0; // timer de duracao da tela de vitoria
+
+    int fase = 1;
+    int trocandoFase = 0;
+    int timerTrocaFase = 0;
+    int proximaFase = 0;
+
+    int inimigoLinha[MAX_INIMIGOS]; // define a linha em que o inimigo se encontra
+    int inimigoColuna[MAX_INIMIGOS]; // define a coluna em que o inimigo se encontra
+    int inimigoDirecao[MAX_INIMIGOS]; // define se o inimigo vai para a direita ou esquerda
+    int totalInimigos;
 
 
+
+//  Botoes do menu
     Botao btnNovo;
-    btnNovo.rect = (Rectangle){ BOTAO_X, POS_Y_NOVO_JOGO, LARGURA_BOTAO, ALTURA_BOTAO };
+    btnNovo.rect = (Rectangle)
+    {
+        BOTAO_X, POS_Y_NOVO_JOGO, LARGURA_BOTAO, ALTURA_BOTAO
+    };
     btnNovo.texture = LoadTexture("graphics/novo_jogo_menu.png");
     btnNovo.ativo = true;
 
     Botao btnRanking;
-    btnRanking.rect = (Rectangle){ BOTAO_X, POS_Y_RANKING, LARGURA_BOTAO, ALTURA_BOTAO };
+    btnRanking.rect = (Rectangle)
+    {
+        BOTAO_X, POS_Y_RANKING, LARGURA_BOTAO, ALTURA_BOTAO
+    };
     btnRanking.texture = LoadTexture("graphics/ranking_menu.png");
     btnRanking.ativo = true;
 
     Botao btnSair;
-    btnSair.rect = (Rectangle){ BOTAO_X, POS_Y_SAIR, LARGURA_BOTAO, ALTURA_BOTAO };
+    btnSair.rect = (Rectangle)
+    {
+        BOTAO_X, POS_Y_SAIR, LARGURA_BOTAO, ALTURA_BOTAO
+    };
     btnSair.texture = LoadTexture("graphics/sair_menu.png");
     btnSair.ativo = true;
 
@@ -48,93 +88,204 @@ int main(void)
     EstadoJogo telaAtual = TELA_MENU;
 
     // enquanto ESC nao for pressionada ou nao for clicado no x para fechar a janela, continuara executando o programa em looping
-    while (!WindowShouldClose()) {
+    while (!WindowShouldClose())
+    {
         Vector2 mousePos = GetMousePosition();
 
         //definindo a logica de atualizacao:
-        bool fecharJogo = false;
-        switch (telaAtual){
-            case TELA_MENU:
-                if (CheckCollisionPointRec(mousePos, btnNovo.rect) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+
+        switch (telaAtual)
+        {
+
+        case TELA_MENU:
+            if (CheckCollisionPointRec(mousePos, btnNovo.rect) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+            {
+                // zera tudo ao iniciar novo jogo
+                fase = 1;
+                gameOver = 0;
+                ganhou = 0;
+                timerGameOver = 0;
+                timerGanhou = 0;
+                trocandoFase = 0;
+                timerTrocaFase = 0;
+                conta_frames_gravidade = 0;
+                conta_frames_inimigo = 0;
+
+                // carrega mapa e encontra player/inimigos
+                carregarMapa(mapa1, "mapa1.txt");
+                mapaAtual = mapa1;
+                encontrarPlayer(mapaAtual, &playerLinha, &playerColuna);
+                encontrarInimigos(mapaAtual, inimigoLinha, inimigoColuna, inimigoDirecao, &totalInimigos);
+
                 telaAtual = TELA_JOGO;
-                }
-                // Lógica do botão Ranking
-                if (CheckCollisionPointRec(mousePos, btnRanking.rect) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-                    telaAtual = TELA_RANKING;
-                }
-                // Lógica do botão Sair
-                if (CheckCollisionPointRec(mousePos, btnSair.rect) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-                    fecharJogo = true;
-                }
+            }
+            if (CheckCollisionPointRec(mousePos, btnRanking.rect) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+                telaAtual = TELA_RANKING;
+            if (CheckCollisionPointRec(mousePos, btnSair.rect) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+            {
+                UnloadTexture(spriteMario);
+                UnloadTexture(background);
+                UnloadTexture(btnNovo.texture);
+                UnloadTexture(btnRanking.texture);
+                UnloadTexture(btnSair.texture);
+                CloseWindow();
+            }
+            break;
 
-                break;
-
-            case TELA_JOGO:
-                DrawText("VOCE ESTA NO JOGO! ('M' de Menu para voltar)", 100, 300, 20, RAYWHITE);
-
-                // TESTE MARIO TESTE MARIO TESTE MARIO TESTE MARIO TESTE MARIO
-                int colunaAleatoria = 15;
-                int linhaAleatoria = 20;
-
-                // Desenha o Mario multiplicando a grade pelo tamanho de 25 pixels
-                DrawTexture(spriteMario, colunaAleatoria * TILE_SIZE, linhaAleatoria * TILE_SIZE, WHITE);
-                // --------------------------------------
-
-                break;
-
-            case TELA_RANKING:
-                //
-                //
-                //
-                //
+        case TELA_JOGO:
+            // pausa
+            if (IsKeyPressed(KEY_TAB))
+            {
+                telaAtual = TELA_PAUSA;
                 break;
             }
-        if (fecharJogo) break;
+
+            // tela de game over (só conta o timer, depois volta ao menu)
+            if (gameOver)
+            {
+                timerGameOver++;
+                if (timerGameOver > FPS * 3) telaAtual = TELA_MENU;
+                break;
+            }
+
+            // tela de vitoria (só conta o timer, depois volta ao menu)
+            if (ganhou)
+            {
+                timerGanhou++;
+                if (timerGanhou > FPS * 3) telaAtual = TELA_MENU;
+                break;
+            }
+
+            // troca de fase (animacao de carregamento)
+            if (trocandoFase)
+            {
+                timerTrocaFase++;
+                if (timerTrocaFase > FPS * 0.6f)
+                {
+                    fase = proximaFase;
+                    if (fase == 1)
+                    {
+                        carregarMapa(mapa1, "mapa1.txt");
+                        mapaAtual = mapa1;
+                        playerLinha = 1;
+                        playerColuna = 16;
+                    }
+                    else if (fase == 2)
+                    {
+                        carregarMapa(mapa2, "mapa2.txt");
+                        mapaAtual = mapa2;
+                        encontrarPlayer(mapaAtual, &playerLinha, &playerColuna);
+                    }
+                    encontrarInimigos(mapaAtual, inimigoLinha, inimigoColuna, inimigoDirecao, &totalInimigos);
+                    conta_frames_gravidade = 0;
+                    conta_frames_inimigo   = 0;
+                    trocandoFase = 0;
+                }
+                break;
+            }
+
+            // movimentação normal
+            moverHorizontal(mapaAtual, &playerLinha, &playerColuna);
+            moverVertical(mapaAtual, &playerLinha, playerColuna);
+            aplicarGravidade(mapaAtual, &playerLinha, playerColuna, &conta_frames_gravidade);
+            movimentaInimigos(mapaAtual, inimigoLinha, inimigoColuna, inimigoDirecao, totalInimigos, &conta_frames_inimigo);
+            limitarBordas(&playerColuna);
+
+            // troca de fase pelas bordas
+            if (fase == 1 && passouFase(playerLinha))
+            {
+                proximaFase = 2;
+                trocandoFase = 1;
+                timerTrocaFase = 0;
+            }
+            if (fase == 2 && voltouFase(playerLinha))
+            {
+                proximaFase = 1;
+                trocandoFase = 1;
+                timerTrocaFase = 0;
+            }
+
+            // colisao e vitoria
+            if (colisaoInimigo(playerLinha, playerColuna, inimigoLinha, inimigoColuna, totalInimigos))
+                gameOver = 1;
+            if (vitoria(mapaAtual, playerLinha, playerColuna))
+                ganhou = 1;
+            break;
+
+        case TELA_PAUSA:
+            // TODO: lógica dos botões de pausa (Continuar / Menu / Sair)
+            if (IsKeyPressed(KEY_TAB)) telaAtual = TELA_JOGO;
+            if (IsKeyPressed(KEY_M))   telaAtual = TELA_MENU;
+            break;
+
+        case TELA_RANKING:
+            // TODO: exibir placar.bin
+            if (IsKeyPressed(KEY_M)) telaAtual = TELA_MENU;
+            break;
+        }
 
         //iniciar desenho
         BeginDrawing();
-            // imagem do desenho fica preta e depois sera substituida pelas imagens do menu do jogo
-            ClearBackground(BLACK);
+        ClearBackground(BLACK);
 
-            switch (telaAtual) {
-                case TELA_MENU:
-                    DrawTexture(background, 0, 0, WHITE);
+        switch (telaAtual)
+        {
 
-                    Color cNovo = CheckCollisionPointRec(mousePos, btnNovo.rect) ? GRAY : WHITE;
-                    DrawTexture(btnNovo.texture, btnNovo.rect.x, btnNovo.rect.y, cNovo);
+        case TELA_MENU:
+            DrawTexture(background, 0, 0, WHITE);
+            DrawTexture(btnNovo.texture, btnNovo.rect.x, btnNovo.rect.y,
+                        CheckCollisionPointRec(mousePos, btnNovo.rect) ? GRAY : WHITE);
+            DrawTexture(btnRanking.texture, btnRanking.rect.x, btnRanking.rect.y,
+                        CheckCollisionPointRec(mousePos, btnRanking.rect) ? GRAY : WHITE);
+            DrawTexture(btnSair.texture, btnSair.rect.x, btnSair.rect.y,
+                        CheckCollisionPointRec(mousePos, btnSair.rect) ? GRAY : WHITE);
+            break;
 
-                    Color cRank = CheckCollisionPointRec(mousePos, btnRanking.rect) ? GRAY : WHITE;
-                    DrawTexture(btnRanking.texture, btnRanking.rect.x, btnRanking.rect.y, cRank);
+        case TELA_JOGO:
+            ClearBackground(BLUE);
+            desenharMapa(mapaAtual);
+            desenharPlayer(playerLinha, playerColuna);
+            desenharInimigos(inimigoLinha, inimigoColuna, totalInimigos);
 
-                    Color cSair = CheckCollisionPointRec(mousePos, btnSair.rect) ? GRAY : WHITE;
-                    DrawTexture(btnSair.texture, btnSair.rect.x, btnSair.rect.y, cSair);
-                    break;
-
-                case TELA_JOGO:
-                    DrawText("VOCE ESTA NO JOGO! ('M' de Menu para voltar)", 100, 300, 20, RAYWHITE);
-                    break;
-
-                case TELA_RANKING:
-                    DrawText("RANKING TESTE- JOGADOR 1", 100, 300, 30, GOLD);
-                    DrawText("Pressione  a tecla 'M' de Menu para voltar", 100, 350, 20, RAYWHITE);
-                    break;
+            if (trocandoFase)
+            {
+                DrawRectangle(0, 0, COLUNAS * TILE_SIZE, LINHAS * TILE_SIZE, DARKBLUE);
+                DrawText("Carregando...", COLUNAS * TILE_SIZE / 2 - 120, LINHAS * TILE_SIZE / 2, 40, WHITE);
             }
-        if (IsKeyPressed(KEY_M)) {
-            telaAtual = TELA_MENU;
+            if (gameOver)
+            {
+                DrawRectangle(0, 0, COLUNAS * TILE_SIZE, LINHAS * TILE_SIZE, BLACK);
+                DrawText("GAME OVER", COLUNAS * TILE_SIZE / 2 - 120, LINHAS * TILE_SIZE / 2, 40, RED);
+            }
+            if (ganhou)
+            {
+                DrawRectangle(0, 0, COLUNAS * TILE_SIZE, LINHAS * TILE_SIZE, BLUE);
+                DrawText("VOCE GANHOU!", COLUNAS * TILE_SIZE / 2 - 120, LINHAS * TILE_SIZE / 2, 40, WHITE);
+            }
+            break;
+
+        case TELA_PAUSA:
+            // TODO: desenhar botões de pausa
+            ClearBackground(BLACK);
+            DrawText("PAUSADO", COLUNAS * TILE_SIZE / 2 - 80, LINHAS * TILE_SIZE / 2 - 40, 40, WHITE);
+            DrawText("TAB - Continuar   M - Menu", COLUNAS * TILE_SIZE / 2 - 160, LINHAS * TILE_SIZE / 2 + 20, 20, LIGHTGRAY);
+            break;
+
+        case TELA_RANKING:
+            // TODO: exibir placar.bin
+            DrawText("RANKING", 100, 200, 40, GOLD);
+            DrawText("(em breve)", 100, 260, 20, LIGHTGRAY);
+            DrawText("M - Voltar ao menu", 100, 350, 20, RAYWHITE);
+            break;
         }
         EndDrawing();
-
-
-
     }
+
     UnloadTexture(spriteMario);
     UnloadTexture(background);
     UnloadTexture(btnNovo.texture);
     UnloadTexture(btnRanking.texture);
     UnloadTexture(btnSair.texture);
-
-
-    // fecha a janela aberta
     CloseWindow();
     return 0;
 }
