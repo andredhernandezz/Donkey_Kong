@@ -8,6 +8,8 @@
 #include "funcoes_mapa.h"
 #include "funcoes_jogador.h"
 #include "constantes.h"
+#include "placar.h"
+
 
 typedef enum
 {
@@ -15,8 +17,8 @@ typedef enum
     TELA_JOGO,
     TELA_PAUSA,
     TELA_RANKING,
+    TELA_INPUT_NOME
 } EstadoJogo;
-
 
 int main(void)
 {
@@ -25,34 +27,30 @@ int main(void)
     //determina os frames per second da tela, nesse caso 60
     SetTargetFPS(60);
     // coloca o jogo em tela cheia
-    ToggleFullscreen();
 
+    // CARREGAMENTO DAS MUSICAS SALVAS NA PASTA AUDIO
     InitAudioDevice();
     Music musicaMenu  = LoadMusicStream("audio/menu.mp3");
     Music musicaFase1 = LoadMusicStream("audio/fase1.mp3");
     Music musicaFase2 = LoadMusicStream("audio/fase2.mp3");
+    Music musicaFase3 = LoadMusicStream("audio/fase3.mp3");
     PlayMusicStream(musicaMenu);
 
-    // carregando a imagem da capa do menu como a variavel background
+    // CARREGAMENTO DAS IMAGENS SALVAS NA PASTA GRAPHICS
     Texture2D background = LoadTexture("graphics/capa_menu.png");
-
-    // TESTE
-
-    // APENAS TESTE MARIO
     Texture2D spriteMarioDir = LoadTexture("graphics/mario-dir.png");
     Texture2D spriteMarioEsq = LoadTexture("graphics/mario-esq.png");
-
     Texture2D spriteEstrutura = LoadTexture("graphics/estrutura.png");
-
     Texture2D spriteEscada = LoadTexture("graphics/escada.png");
-
     Texture2D spriteInimigoDir = LoadTexture("graphics/enemy-dir.png");
     Texture2D spriteInimigoEsq = LoadTexture("graphics/enemy-esq.png");
 
+    // PARA EXIBIR O TEMPO
+    float tempoDeJogo = 0.0f;
+    char nomeJogador[20] = "\0";
+    int letrasContadas = 0;
 
-
-
-    // TESTE
+    // INICIALIZACAO DAS VARIAVEIS NECESSARIAS PARA O JOGO
     char mapa1[LINHAS][COLUNAS]; // matriz para armazenar o mapa 1
     char mapa2[LINHAS][COLUNAS]; // matriz para armazenar o mapa 2
     char mapa3[LINHAS][COLUNAS]; // matriz para armazenar o mapa 3
@@ -112,6 +110,11 @@ int main(void)
 
         //definindo a logica de atualizacao:
 
+        // CLICAR F1 PARA COLOCAR EM TELA CHEIA
+        if (IsKeyPressed(KEY_F1))
+        {
+            ToggleFullscreen();
+        }
         switch (telaAtual)
         {
 
@@ -119,6 +122,7 @@ int main(void)
             if (CheckCollisionPointRec(mousePos, btnNovo.rect) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
             {
                 // zera tudo ao iniciar novo jogo
+                tempoDeJogo = 0.0f;
                 fase = 1;
                 gameOver = 0;
                 ganhou = 0;
@@ -159,13 +163,17 @@ int main(void)
             break;
 
         case TELA_JOGO:
+            // CONTROLE DE TEMPO
+            if (!gameOver && !ganhou && !trocandoFase)
+            {
+                tempoDeJogo += GetFrameTime();
+            }
             // pausa
             if (IsKeyPressed(KEY_TAB))
             {
                 telaAtual = TELA_PAUSA;
                 break;
             }
-
             // tela de game over (só conta o timer, depois volta ao menu)
             if (gameOver)
             {
@@ -174,10 +182,12 @@ int main(void)
                 {
                     StopMusicStream(musicaFase1);
                     StopMusicStream(musicaFase2);
+                    StopMusicStream(musicaFase3);
                     PlayMusicStream(musicaMenu);
                     telaAtual = TELA_MENU;
                 }
                 break;
+
             }
             // tela de vitoria (só conta o timer, depois volta ao menu)
             if (ganhou)
@@ -185,10 +195,16 @@ int main(void)
                 timerGanhou++;
                 if (timerGanhou > FPS * 3)
                 {
+
                     StopMusicStream(musicaFase1);
                     StopMusicStream(musicaFase2);
+                    StopMusicStream(musicaFase3);
                     PlayMusicStream(musicaMenu);
-                    telaAtual = TELA_MENU;
+                    nomeJogador[0] = '\0';
+                    letrasContadas = 0;
+                    // Vai para a tela de registro
+                    telaAtual = TELA_INPUT_NOME;
+
                 }
                 break;
             }
@@ -210,27 +226,33 @@ int main(void)
                         StopMusicStream(musicaFase2);
                         PlayMusicStream(musicaFase1);
                     }
-                    else if (fase == 2) {
+                    else if (fase == 2)
+                    {
                         carregarMapa(mapa2, "mapa2.txt");
                         mapaAtual = mapa2;
                         if (faseAnterior == 1)
                             encontrarPlayer(mapaAtual, &player);
-                        else if (faseAnterior == 3){
+                        else if (faseAnterior == 3)
+                        {
                             player.linha = 2;
                             player.coluna = 14;
                         }
                         StopMusicStream(musicaFase1);  // ← adiciona
                         PlayMusicStream(musicaFase2);
                     }
-                    else if (fase == 3) {
+                    else if (fase == 3)
+                    {
                         carregarMapa(mapa3, "mapa3.txt");
                         mapaAtual = mapa3;
                         encontrarPlayer(mapaAtual, &player);
+                        StopMusicStream(musicaFase2);
+                        PlayMusicStream(musicaFase3);
                     }
                     encontrarInimigos(mapaAtual, inimigos, &totalInimigos);
                     player.contadorGravidade = 0;
                     conta_frames_inimigo   = 0;
                     trocandoFase = 0;
+
                 }
                 break;
             }
@@ -282,26 +304,82 @@ int main(void)
             if (IsKeyPressed(KEY_S))
             {
                 UnloadTexture(spriteMarioDir);
+                UnloadTexture(spriteMarioEsq);
                 UnloadTexture(background);
                 UnloadTexture(btnNovo.texture);
                 UnloadTexture(btnRanking.texture);
                 UnloadTexture(btnSair.texture);
+                UnloadTexture(spriteEscada);
+                UnloadTexture(spriteEstrutura);
+                UnloadTexture(spriteInimigoDir);
+                UnloadTexture(spriteInimigoEsq);
+                UnloadMusicStream(musicaMenu);
+                UnloadMusicStream(musicaFase1);
+                UnloadMusicStream(musicaFase2);
+                UnloadMusicStream(musicaFase3);
+                CloseAudioDevice();
                 return 0;
             }
             break;
 
         case TELA_RANKING:
-            // TODO: exibir placar.bin
             if (IsKeyPressed(KEY_M)) telaAtual = TELA_MENU;
             break;
+
+        case TELA_INPUT_NOME:
+            // Captura de texto pela Raylib
+            int chave = GetCharPressed();
+            while (chave > 0)
+            {
+                if ((chave >= 32) && (chave <= 125) && (letrasContadas < 19))
+                {
+                    nomeJogador[letrasContadas] = (char)chave;
+                    nomeJogador[letrasContadas + 1] = '\0';
+                    letrasContadas++;
+                }
+                chave = GetCharPressed();
+            }
+
+            if (IsKeyPressed(KEY_BACKSPACE))
+            {
+                letrasContadas--;
+                if (letrasContadas < 0) letrasContadas = 0;
+                nomeJogador[letrasContadas] = '\0';
+            }
+
+            if (IsKeyPressed(KEY_ENTER) && letrasContadas > 0)
+            {
+                // Aqui chamamos a função para salvar no placar
+                salvarResultadoNoPlacar(nomeJogador, (int)tempoDeJogo);
+
+                StopMusicStream(musicaFase1);
+                StopMusicStream(musicaFase2);
+                StopMusicStream(musicaFase3);
+                PlayMusicStream(musicaMenu);
+                telaAtual = TELA_RANKING;
+            }
+            break;
+
+
+
         }
 
         if (telaAtual == TELA_MENU)
+        {
             UpdateMusicStream(musicaMenu);
+        }
         else if (fase == 1)
+        {
             UpdateMusicStream(musicaFase1);
+        }
         else if (fase == 2)
+        {
             UpdateMusicStream(musicaFase2);
+        }
+        else if (fase == 3)
+        {
+            UpdateMusicStream(musicaFase3);
+        }
 
 
         //iniciar desenho
@@ -327,10 +405,16 @@ int main(void)
             desenharPlayer(player, spriteMarioDir, spriteMarioEsq);
             desenharInimigos(inimigos, totalInimigos, spriteInimigoDir, spriteInimigoEsq);
 
+            // TEXTO DA FASE ATUAL
+            DrawText(TextFormat("FASE: %d", fase), 30, 6, 20, WHITE);
+
+            // TEXTO PARA O TEMPO DECORRIDO JOGANDO
+            DrawText(TextFormat("TEMPO: %.1fs", tempoDeJogo), GetScreenWidth() - 180, 6, 20, RED);
+
             if (trocandoFase)
             {
                 DrawRectangle(0, 0, COLUNAS * TILE_SIZE, LINHAS * TILE_SIZE, DARKBLUE);
-                DrawText("Carregando...", COLUNAS * TILE_SIZE / 2 - 120, LINHAS * TILE_SIZE / 2, 40, WHITE);
+                DrawText("  ...", COLUNAS * TILE_SIZE / 2 - 120, LINHAS * TILE_SIZE / 2, 40, WHITE);
             }
             if (gameOver)
             {
@@ -339,8 +423,9 @@ int main(void)
             }
             if (ganhou)
             {
+                ClearBackground(BLACK);
                 DrawRectangle(0, 0, COLUNAS * TILE_SIZE, LINHAS * TILE_SIZE, BLUE);
-                DrawText("VOCE GANHOU!", COLUNAS * TILE_SIZE / 2 - 120, LINHAS * TILE_SIZE / 2, 40, WHITE);
+                DrawText("VITÓRIA!", COLUNAS * TILE_SIZE / 2 - 140, 200, 60, GOLD);
             }
             break;
 
@@ -353,9 +438,37 @@ int main(void)
 
         case TELA_RANKING:
             // TODO: exibir placar.bin
-            DrawText("RANKING", 100, 200, 40, GOLD);
-            DrawText("(em breve)", 100, 260, 20, LIGHTGRAY);
-            DrawText("M - Voltar ao menu", 100, 350, 40, RAYWHITE);
+            TIPO_PLACAR placar[10];
+            int qtd = 0;
+            FILE *arq = fopen("placar.bin", "rb");
+            if (arq != NULL){
+                qtd = fread(placar, sizeof(TIPO_PLACAR), 10, arq);
+                fclose(arq);
+            }
+            DrawText("RANKING", 280, 50, 40, GOLD);
+            for (int i=0; i < qtd; i++){
+                char linha[50];
+                sprintf(linha, "%d. %s - %ds", i+1, placar[i].nome, placar[i].time);
+                DrawText(linha, 150, 120 + i * 40, 25, WHITE);
+            }
+            DrawText("M - Voltar ao menu", 200, 550, 20, LIGHTGRAY);
+            DrawText("L - Limpar Ranking", 200, 600, 20, LIGHTGRAY);
+            if (IsKeyPressed(KEY_L)){
+                limparPlacar();
+                qtd = 0;
+            }
+
+
+            break;
+        case TELA_INPUT_NOME:
+            ClearBackground(BLACK);
+            DrawText("VITÓRIA! INSIRA SEU NOME:", COLUNAS * TILE_SIZE / 2 - 220, 200, 30, GOLD);
+            DrawRectangle(COLUNAS * TILE_SIZE / 2 - 200, 300, 400, 50, LIGHTGRAY);
+            DrawRectangleLines(COLUNAS * TILE_SIZE / 2 - 200, 300, 400, 50, GRAY);
+            // Mostra o nome que está sendo digitado em tempo real
+            DrawText(nomeJogador, COLUNAS * TILE_SIZE / 2 - 180, 312, 26, DARKGRAY);
+
+            DrawText("Pressione ENTER para salvar", COLUNAS * TILE_SIZE / 2 - 150, 400, 20, RAYWHITE);
             break;
         }
         EndDrawing();
@@ -374,7 +487,10 @@ int main(void)
     UnloadMusicStream(musicaMenu);
     UnloadMusicStream(musicaFase1);
     UnloadMusicStream(musicaFase2);
+    UnloadMusicStream(musicaFase3);
     CloseAudioDevice();
     CloseWindow();
     return 0;
+
 }
+

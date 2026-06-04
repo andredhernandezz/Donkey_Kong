@@ -25,6 +25,6 @@ B.....S.E.....D.......D..S...B
 B..ZZZZZZZZZZZHZZZZZZZHZZZZ..B
 B.............H.......H......B
 B.............H.......H......B
-B...P.........S.......S......B
+B...P.........S...F...S......B
 BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
 BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
