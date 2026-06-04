@@ -105,3 +105,52 @@
 	<stdio.h>
 	"constantes.h"
 
+1780613049 source:c:\users\germano\downloads\donkey_kong-9.0\donkey_kong-9.0\meujogo\jogo.c
+	"raylib.h"
+	"button.h"
+	<stdio.h>
+	<stdlib.h>
+	"funcoes_desenha_jogo.h"
+	"funcoes_fase.h"
+	"funcoes_inimigos.h"
+	"funcoes_mapa.h"
+	"funcoes_jogador.h"
+	"constantes.h"
+	"placar.h"
+
+1780600353 c:\users\germano\downloads\donkey_kong-9.0\donkey_kong-9.0\meujogo\button.h
+	"raylib.h"
+
+1780601729 c:\users\germano\downloads\donkey_kong-9.0\donkey_kong-9.0\meujogo\funcoes_desenha_jogo.h
+	"raylib.h"
+	<stdio.h>
+	"constantes.h"
+
+1780600353 c:\users\germano\downloads\donkey_kong-9.0\donkey_kong-9.0\meujogo\constantes.h
+
+1780611245 c:\users\germano\downloads\donkey_kong-9.0\donkey_kong-9.0\meujogo\funcoes_fase.h
+	"raylib.h"
+	<stdio.h>
+	"constantes.h"
+
+1780600353 c:\users\germano\downloads\donkey_kong-9.0\donkey_kong-9.0\meujogo\funcoes_inimigos.h
+	"raylib.h"
+	<stdio.h>
+	"funcoes_mapa.h"
+	"constantes.h"
+
+1780600353 c:\users\germano\downloads\donkey_kong-9.0\donkey_kong-9.0\meujogo\funcoes_mapa.h
+	"raylib.h"
+	<stdio.h>
+	"constantes.h"
+
+1780615257 c:\users\germano\downloads\donkey_kong-9.0\donkey_kong-9.0\meujogo\funcoes_jogador.h
+	"raylib.h"
+	<stdio.h>
+	"constantes.h"
+
+1780600353 c:\users\germano\downloads\donkey_kong-9.0\donkey_kong-9.0\meujogo\placar.h
+	"raylib.h"
+	<stdio.h>
+	"constantes.h"
+

@@ -4,13 +4,13 @@
 	<Project>
 		<Option title="MeuJogo" />
 		<Option pch_mode="2" />
-		<Option compiler="gcc" />
+		<Option compiler="mingw_novo" />
 		<Build>
 			<Target title="Debug">
 				<Option output="bin/Debug/MeuJogo" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
-				<Option compiler="gcc" />
+				<Option compiler="mingw_novo" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
@@ -19,7 +19,7 @@
 				<Option output="bin/Release/MeuJogo" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
-				<Option compiler="gcc" />
+				<Option compiler="mingw_novo" />
 				<Compiler>
 					<Add option="-O2" />
 				</Compiler>
@@ -30,18 +30,28 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add directory="C:/raylib/include" />
 		</Compiler>
+		<Linker>
+			<Add library="raylib" />
+			<Add library="opengl32" />
+			<Add library="gdi32" />
+			<Add library="winmm" />
+			<Add directory="C:/raylib/lib" />
+		</Linker>
 		<Unit filename="button.h" />
 		<Unit filename="constantes.h" />
 		<Unit filename="funcoes_desenha_jogo.h" />
 		<Unit filename="funcoes_fase.h" />
 		<Unit filename="funcoes_inimigos.h" />
+		<Unit filename="funcoes_jogador.h" />
 		<Unit filename="funcoes_mapa.h" />
-		<Unit filename="funcoes_movimentacao_jogador.h" />
 		<Unit filename="jogo.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="mapa1.txt" />
+		<Unit filename="mapa2.txt" />
+		<Unit filename="mapa3.txt" />
 		<Unit filename="placar.h" />
 		<Extensions />
 	</Project>

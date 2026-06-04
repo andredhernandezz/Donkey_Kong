@@ -7,7 +7,7 @@
 
 // funcao que verifica se o player passou de fase
 int passouFase(int playerLinha){
-    if (playerLinha == 0 && IsKeyPressed(KEY_UP)) {
+    if (playerLinha == 0 && (IsKeyPressed(KEY_UP) || IsKeyDown(KEY_UP))) {
         return 1;
     }
 
@@ -16,7 +16,7 @@ int passouFase(int playerLinha){
 
 // funcao que verifica se o player voltou pra fase anterior
 int voltouFase(int playerLinha){
-    if (playerLinha == 28 && IsKeyPressed(KEY_DOWN)){
+    if (playerLinha == 28 && (IsKeyPressed(KEY_DOWN) || IsKeyDown(KEY_DOWN))) {
         return 1;
     }
 

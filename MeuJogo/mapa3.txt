@@ -1,13 +1,13 @@
 BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
-B............................B
-B.....D.E..................F.B
-B...ZZHZZZZZZZZZZZZZZZZZZZZZZB
+B.........................f..B
+B.....D.E.................F..B
+B...ZZHZZZZZZZZZZ.ZZZZZZZZZZZB
 B.....H......................B
 B.....S..........E..ED.......B
 B..ZZZZZZZZZZZZZZZZZZHZZ.....B
 B....................H.......B
 B..E....D............S....D..B
-B..ZZZZZHZZZZZZZZZZZZZZZZZH..B
+B..ZZZZZHZZZZZ.ZZZZZZZZZZZH..B
 B.......H.................H..B
 B.......S......D....E.....S..B
 B.......ZZZZZZZHZZZZZZZZZZZZ.B
@@ -16,7 +16,7 @@ B...D..........S..EE.........B
 B..ZHZZZZZZZZZZZZZZZZ........B
 B...H........................B
 B...S...................D....B
-B..ZZZZZZZZZZZZZZZZZZZZZHZ...B
+B..ZZZZZZZ.ZZZZZZZ.ZZZZZHZ...B
 B.......................H....B
 B.........D....E.E......S..D.B
 B......ZZZHZZZZZZZZZZZZZZZZH.B

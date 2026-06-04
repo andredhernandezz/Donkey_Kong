@@ -44,6 +44,9 @@ int main(void)
     Texture2D spriteEscada = LoadTexture("graphics/escada.png");
     Texture2D spriteInimigoDir = LoadTexture("graphics/enemy-dir.png");
     Texture2D spriteInimigoEsq = LoadTexture("graphics/enemy-esq.png");
+    Texture2D spritePortaBaixo = LoadTexture("graphics/porta-baixo.png");
+    Texture2D spritePortaCima = LoadTexture("graphics/porta-cima.png");
+
 
     // PARA EXIBIR O TEMPO
     float tempoDeJogo = 0.0f;
@@ -260,6 +263,7 @@ int main(void)
             // movimentação normal
             moverHorizontal(mapaAtual, &player);
             moverVertical(mapaAtual, &player);
+            pular(mapaAtual, &player);
             aplicarGravidade(mapaAtual, &player);
             movimentaInimigos(mapaAtual, inimigos, totalInimigos, &conta_frames_inimigo);
             limitarBordas(&player);
@@ -323,7 +327,12 @@ int main(void)
             break;
 
         case TELA_RANKING:
-            if (IsKeyPressed(KEY_M)) telaAtual = TELA_MENU;
+            if(!(IsMusicStreamPlaying(musicaMenu)))
+                    PlayMusicStream(musicaMenu);
+
+            if (IsKeyPressed(KEY_M)){
+                telaAtual = TELA_MENU;
+            }
             break;
 
         case TELA_INPUT_NOME:
@@ -364,7 +373,7 @@ int main(void)
 
         }
 
-        if (telaAtual == TELA_MENU)
+        if (telaAtual == TELA_MENU || telaAtual == TELA_RANKING)
         {
             UpdateMusicStream(musicaMenu);
         }
@@ -401,7 +410,7 @@ int main(void)
 
         case TELA_JOGO:
             ClearBackground(BLACK);
-            desenharMapa(mapaAtual, spriteEstrutura, spriteEscada, spriteInimigoDir);
+            desenharMapa(mapaAtual, spriteEstrutura, spriteEscada, spriteInimigoDir, spritePortaBaixo, spritePortaCima);
             desenharPlayer(player, spriteMarioDir, spriteMarioEsq);
             desenharInimigos(inimigos, totalInimigos, spriteInimigoDir, spriteInimigoEsq);
 

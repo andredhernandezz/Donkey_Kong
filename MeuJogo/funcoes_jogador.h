@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include "constantes.h"
 
-
 typedef struct{
     int linha;
     int coluna;
@@ -33,64 +32,140 @@ void encontrarPlayer(char mapa[LINHAS][COLUNAS], PLAYER *p) {
 // movimentacao horizonatal do jogador
 void moverHorizontal(char mapa[LINHAS][COLUNAS], PLAYER *p) {
 
-    if (IsKeyPressed(KEY_RIGHT)) {
-        if (p->linha < LINHAS - 1 &&
-            (mapa[p->linha + 1][p->coluna] == 'Z' ||
-             mapa[p->linha + 1][p->coluna] == 'B' ||
-             mapa[p->linha][p->coluna] == 'D' ||
-             mapa[p->linha][p->coluna] == 'H')) {
+    static int contadorMovX = 0;
+    contadorMovX++;
 
+    // clique responde na hora
+    if (IsKeyPressed(KEY_RIGHT)) {
+        p->coluna++;
+        p->direcao = 1;
+        contadorMovX = 0;
+        return;
+    }
+    if (IsKeyPressed(KEY_LEFT)) {
+        p->coluna--;
+        p->direcao = -1;
+        contadorMovX = 0;
+        return;
+    }
+
+    // so avança o contador quando estiver segurando a tecla
+    if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_LEFT)) {
+        contadorMovX++;
+    } else {
+        contadorMovX = 0; // zera o contador, caso a tecla seja solta
+    }
+
+    // segurar usa delay
+    if (contadorMovX >= 16) {
+
+        if (IsKeyPressed(KEY_RIGHT) || IsKeyDown(KEY_RIGHT)) {
             p->coluna++;
             p->direcao = 1;
         }
-    }
 
-    if (IsKeyPressed(KEY_LEFT)) {
-        if (p->linha < LINHAS - 1 &&
-            (mapa[p->linha + 1][p->coluna] == 'Z' ||
-             mapa[p->linha + 1][p->coluna] == 'B' ||
-             mapa[p->linha][p->coluna] == 'D' ||
-             mapa[p->linha][p->coluna] == 'H')) {
-
+        else if (IsKeyPressed(KEY_LEFT)  || IsKeyDown(KEY_LEFT)) {
             p->coluna--;
             p->direcao = -1;
         }
+
+        contadorMovX = 0;
     }
 }
 
-// funcioamento das escadas
+// funcionamento das escadas
 void moverVertical(char mapa[LINHAS][COLUNAS], PLAYER *p) {
 
-    // subir
-    if (IsKeyPressed(KEY_UP)) {
-        if (mapa[p->linha][p->coluna] == 'H' ||
-            mapa[p->linha][p->coluna] == 'S') {
+    static int contadorMovY=0;
+    contadorMovY++;
 
-            (p->linha)--;
+    // clique responde na hora
+    if (IsKeyPressed(KEY_UP) && (mapa[p->linha][p->coluna] == 'S' || mapa[p->linha][p->coluna] == 'H')) {
+        p->linha--;
+        contadorMovY=0;
+        return;
+    }
+    if (IsKeyPressed(KEY_DOWN) && (mapa[p->linha][p->coluna] == 'D' || mapa[p->linha][p->coluna] == 'H')) {
+        p->linha++;
+        contadorMovY=0;
+        return;
+    }
+
+    // so avança o contador quando estiver segurando a tecla
+    if ((IsKeyDown(KEY_UP) || IsKeyDown(KEY_DOWN)) &&
+        (mapa[p->linha][p->coluna] == 'S' || mapa[p->linha][p->coluna] == 'H' || mapa[p->linha][p->coluna] == 'D')) {
+        contadorMovY++;
+    } else {
+        contadorMovY = 0; // zera o contador, caso a tecla seja solta
+    }
+
+    if (contadorMovY > 20){
+
+        // subir
+        if (IsKeyPressed(KEY_UP) || IsKeyDown(KEY_UP)
+            && (mapa[p->linha][p->coluna] == 'S' || mapa[p->linha][p->coluna] == 'H')) {
+            if (mapa[p->linha][p->coluna] == 'H' ||
+                mapa[p->linha][p->coluna] == 'S') {
+
+                (p->linha)--;
+            }
+        }
+
+        // descer
+        else if (IsKeyPressed(KEY_DOWN)  || IsKeyDown(KEY_DOWN)
+                 && (mapa[p->linha][p->coluna] == 'D' || mapa[p->linha][p->coluna] == 'H')) {
+            if (mapa[p->linha][p->coluna] == 'H' ||
+                     mapa[p->linha][p->coluna] == 'D') {
+
+                (p->linha)++;
+            }
+        }
+        contadorMovY=0;
+    }
+}
+
+void pular(char mapa[LINHAS][COLUNAS],PLAYER *p){
+    if (IsKeyPressed(KEY_SPACE)){
+        if (mapa[p->linha + 1][p->coluna] == 'Z' || mapa[p->linha + 1][p->coluna] == 'B' || mapa[p->linha + 1][p->coluna] == 'H'){
+
+            p->velY = -2;
         }
     }
 
-    // descer
-    if (IsKeyPressed(KEY_DOWN)) {
-        if (mapa[p->linha][p->coluna] == 'H' ||
-            mapa[p->linha][p->coluna] == 'D') {
-
-            (p->linha)++;
-        }
-    }
 }
 
 // implementação da gravidade
 void aplicarGravidade(char mapa[LINHAS][COLUNAS], PLAYER *p) {
 
-    (p->contadorGravidade)++; // conta os ciclos do loop
+    p->contadorGravidade++;
 
-    if (p->contadorGravidade >= 7) { // apos 7 ciclos (frames) um movimento é feito
-        if (mapa[p->linha + 1][p->coluna] == '.' || mapa[p->linha + 1][p->coluna] == 'D' ||
-            mapa[p->linha + 1][p->coluna] == 'P' || mapa[p->linha + 1][p->coluna] == 'E') {
-            (p->linha)++;
+    if (p->contadorGravidade >= 7) {
+
+        // SUBINDO
+        if (p->velY < 0) {
+            if (mapa[p->linha - 1][p->coluna] == '.') {
+                p->linha--;
+            } else {
+                p->velY = 0; // bateu no teto
+            }
         }
-        p->contadorGravidade = 0; // recomeça o contador
+
+        // CAINDO
+        else {
+            if (mapa[p->linha + 1][p->coluna] == '.' ||mapa[p->linha + 1][p->coluna] == 'D' ||
+                mapa[p->linha + 1][p->coluna] == 'P' ||mapa[p->linha + 1][p->coluna] == 'E' ) {
+
+                p->linha++;
+            } else {
+                p->velY = 0; // está no chão
+            }
+        }
+
+        // GRAVIDADE
+        if (p->velY < 3)
+            p->velY++;
+
+        p->contadorGravidade = 0;
     }
 }
 
