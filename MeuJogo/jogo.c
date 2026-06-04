@@ -6,7 +6,7 @@
 #include "funcoes_fase.h"
 #include "funcoes_inimigos.h"
 #include "funcoes_mapa.h"
-#include "funcoes_movimentacao_jogador.h"
+#include "funcoes_jogador.h"
 #include "constantes.h"
 
 typedef enum
@@ -17,12 +17,15 @@ typedef enum
     TELA_RANKING,
 } EstadoJogo;
 
+
 int main(void)
 {
     //inicializa a janela com tamanho 750x750 com o titulo "Donkey Kong - INF"
     InitWindow(COLUNAS * TILE_SIZE, LINHAS * TILE_SIZE, "Donkey Kong - INF");
     //determina os frames per second da tela, nesse caso 60
     SetTargetFPS(60);
+    // coloca o jogo em tela cheia
+    ToggleFullscreen();
 
     InitAudioDevice();
     Music musicaMenu  = LoadMusicStream("audio/menu.mp3");
@@ -35,41 +38,42 @@ int main(void)
 
     // TESTE
 
-    // APENAS TEXTE MARIO
-    Texture2D spriteMario = LoadTexture("graphics/mario.png");
+    // APENAS TESTE MARIO
+    Texture2D spriteMarioDir = LoadTexture("graphics/mario-dir.png");
+    Texture2D spriteMarioEsq = LoadTexture("graphics/mario-esq.png");
 
     Texture2D spriteEstrutura = LoadTexture("graphics/estrutura.png");
 
     Texture2D spriteEscada = LoadTexture("graphics/escada.png");
 
-    Texture2D spriteInimigo = LoadTexture("graphics/enemy.png");
+    Texture2D spriteInimigoDir = LoadTexture("graphics/enemy-dir.png");
+    Texture2D spriteInimigoEsq = LoadTexture("graphics/enemy-esq.png");
 
 
 
 
     // TESTE
-    char mapa1[LINHAS][COLUNAS]; // matriz para carregar o mapa 1
-    char mapa2[LINHAS][COLUNAS]; // matriz para carregar o mapa 2
+    char mapa1[LINHAS][COLUNAS]; // matriz para armazenar o mapa 1
+    char mapa2[LINHAS][COLUNAS]; // matriz para armazenar o mapa 2
+    char mapa3[LINHAS][COLUNAS]; // matriz para armazenar o mapa 3
     char (*mapaAtual)[COLUNAS]; // mapa da fase atual
     mapaAtual = mapa1;
 
-    int playerLinha = 0, playerColuna = 0; // indices da posicao do player
-    int conta_frames_gravidade = 0; // auxiliar para calcular a velocidade da grav.
-    int conta_frames_inimigo = 0; // auxiliar para calcular a velocidade dos inimigos.
+    PLAYER player;
     int gameOver = 0; // flag que indica fim de jogo ou nao
     int timerGameOver = 0; // timer de duracao da tela de game over
     int ganhou=0; // flag que indica se o player ganhou
     int timerGanhou = 0; // timer de duracao da tela de vitoria
 
-    int fase = 1;
-    int trocandoFase = 0;
-    int timerTrocaFase = 0;
-    int proximaFase = 0;
+    int fase = 1; // fase atual
+    int trocandoFase = 0; // flag que indica se a fase esta trocando
+    int timerTrocaFase = 0; // temporizador que define a duracao da tela de troca de fase
+    int proximaFase = 0; // indicador de qual sera a proxima fase
+    int faseAnterior = 0; // indicador de qual era a fase anterior
 
-    int inimigoLinha[MAX_INIMIGOS]; // define a linha em que o inimigo se encontra
-    int inimigoColuna[MAX_INIMIGOS]; // define a coluna em que o inimigo se encontra
-    int inimigoDirecao[MAX_INIMIGOS]; // define se o inimigo vai para a direita ou esquerda
-    int totalInimigos;
+    INIMIGO inimigos[MAX_INIMIGOS]; // vetor que armazena inimigos
+    int totalInimigos=0; // contador de quantos inimigos tem
+    int conta_frames_inimigo = 0; // auxiliar para calcular a velocidade dos inimigos.
 
 
 
@@ -122,14 +126,14 @@ int main(void)
                 timerGanhou = 0;
                 trocandoFase = 0;
                 timerTrocaFase = 0;
-                conta_frames_gravidade = 0;
+                player.contadorGravidade = 0;
                 conta_frames_inimigo = 0;
 
                 // carrega mapa e encontra player/inimigos
                 carregarMapa(mapa1, "mapa1.txt");
                 mapaAtual = mapa1;
-                encontrarPlayer(mapaAtual, &playerLinha, &playerColuna);
-                encontrarInimigos(mapaAtual, inimigoLinha, inimigoColuna, inimigoDirecao, &totalInimigos);
+                encontrarPlayer(mapaAtual, &player);
+                encontrarInimigos(mapaAtual, inimigos, &totalInimigos);
 
                 StopMusicStream(musicaMenu);
                 PlayMusicStream(musicaFase1);
@@ -140,14 +144,16 @@ int main(void)
                 telaAtual = TELA_RANKING;
             if (CheckCollisionPointRec(mousePos, btnSair.rect) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
             {
-                UnloadTexture(spriteMario);
+                UnloadTexture(spriteMarioDir);
+                UnloadTexture(spriteMarioEsq);
                 UnloadTexture(background);
                 UnloadTexture(btnNovo.texture);
                 UnloadTexture(btnRanking.texture);
                 UnloadTexture(btnSair.texture);
                 UnloadTexture(spriteEscada);
                 UnloadTexture(spriteEstrutura);
-                UnloadTexture(spriteInimigo);
+                UnloadTexture(spriteInimigoDir);
+                UnloadTexture(spriteInimigoEsq);
                 return 0;
             }
             break;
@@ -193,25 +199,36 @@ int main(void)
                 timerTrocaFase++;
                 if (timerTrocaFase > FPS * 0.6f)
                 {
+                    faseAnterior = fase;
                     fase = proximaFase;
                     if (fase == 1)
                     {
                         carregarMapa(mapa1, "mapa1.txt");
                         mapaAtual = mapa1;
-                        playerLinha = 1;
-                        playerColuna = 16;
+                        player.linha = 1;
+                        player.coluna = 16;
                         StopMusicStream(musicaFase2);
                         PlayMusicStream(musicaFase1);
                     }
                     else if (fase == 2) {
                         carregarMapa(mapa2, "mapa2.txt");
                         mapaAtual = mapa2;
-                        encontrarPlayer(mapaAtual, &playerLinha, &playerColuna);
+                        if (faseAnterior == 1)
+                            encontrarPlayer(mapaAtual, &player);
+                        else if (faseAnterior == 3){
+                            player.linha = 2;
+                            player.coluna = 14;
+                        }
                         StopMusicStream(musicaFase1);  // ← adiciona
                         PlayMusicStream(musicaFase2);
                     }
-                    encontrarInimigos(mapaAtual, inimigoLinha, inimigoColuna, inimigoDirecao, &totalInimigos);
-                    conta_frames_gravidade = 0;
+                    else if (fase == 3) {
+                        carregarMapa(mapa3, "mapa3.txt");
+                        mapaAtual = mapa3;
+                        encontrarPlayer(mapaAtual, &player);
+                    }
+                    encontrarInimigos(mapaAtual, inimigos, &totalInimigos);
+                    player.contadorGravidade = 0;
                     conta_frames_inimigo   = 0;
                     trocandoFase = 0;
                 }
@@ -219,30 +236,42 @@ int main(void)
             }
 
             // movimentação normal
-            moverHorizontal(mapaAtual, &playerLinha, &playerColuna);
-            moverVertical(mapaAtual, &playerLinha, playerColuna);
-            aplicarGravidade(mapaAtual, &playerLinha, playerColuna, &conta_frames_gravidade);
-            movimentaInimigos(mapaAtual, inimigoLinha, inimigoColuna, inimigoDirecao, totalInimigos, &conta_frames_inimigo);
-            limitarBordas(&playerColuna);
+            moverHorizontal(mapaAtual, &player);
+            moverVertical(mapaAtual, &player);
+            aplicarGravidade(mapaAtual, &player);
+            movimentaInimigos(mapaAtual, inimigos, totalInimigos, &conta_frames_inimigo);
+            limitarBordas(&player);
 
             // troca de fase pelas bordas
-            if (fase == 1 && passouFase(playerLinha))
+            if (fase == 1 && passouFase(player.linha))
             {
                 proximaFase = 2;
                 trocandoFase = 1;
                 timerTrocaFase = 0;
             }
-            if (fase == 2 && voltouFase(playerLinha))
+            if (fase == 2 && voltouFase(player.linha))
             {
                 proximaFase = 1;
                 trocandoFase = 1;
                 timerTrocaFase = 0;
             }
+            if (fase == 2 && passouFase(player.linha))
+            {
+                proximaFase = 3;
+                trocandoFase = 1;
+                timerTrocaFase = 0;
+            }
+            if (fase == 3 && voltouFase(player.linha))
+            {
+                proximaFase = 2;
+                trocandoFase = 1;
+                timerTrocaFase = 0;
+            }
 
             // colisao e vitoria
-            if (colisaoInimigo(playerLinha, playerColuna, inimigoLinha, inimigoColuna, totalInimigos))
+            if (colisaoInimigo(player.linha, player.coluna, inimigos, totalInimigos))
                 gameOver = 1;
-            if (vitoria(mapaAtual, playerLinha, playerColuna))
+            if (vitoria(mapaAtual, player.linha, player.coluna))
                 ganhou = 1;
             break;
 
@@ -252,7 +281,7 @@ int main(void)
             if (IsKeyPressed(KEY_M))   telaAtual = TELA_MENU;
             if (IsKeyPressed(KEY_S))
             {
-                UnloadTexture(spriteMario);
+                UnloadTexture(spriteMarioDir);
                 UnloadTexture(background);
                 UnloadTexture(btnNovo.texture);
                 UnloadTexture(btnRanking.texture);
@@ -294,9 +323,9 @@ int main(void)
 
         case TELA_JOGO:
             ClearBackground(BLACK);
-            desenharMapa(mapaAtual, spriteEstrutura, spriteEscada, spriteInimigo);
-            desenharPlayer(playerLinha, playerColuna, spriteMario);
-            desenharInimigos(inimigoLinha, inimigoColuna, totalInimigos, spriteInimigo);
+            desenharMapa(mapaAtual, spriteEstrutura, spriteEscada, spriteInimigoDir);
+            desenharPlayer(player, spriteMarioDir, spriteMarioEsq);
+            desenharInimigos(inimigos, totalInimigos, spriteInimigoDir, spriteInimigoEsq);
 
             if (trocandoFase)
             {
@@ -332,14 +361,16 @@ int main(void)
         EndDrawing();
     }
 
-    UnloadTexture(spriteMario);
+    UnloadTexture(spriteMarioDir);
+    UnloadTexture(spriteMarioEsq);
     UnloadTexture(background);
     UnloadTexture(btnNovo.texture);
     UnloadTexture(btnRanking.texture);
     UnloadTexture(btnSair.texture);
     UnloadTexture(spriteEscada);
     UnloadTexture(spriteEstrutura);
-    UnloadTexture(spriteInimigo);
+    UnloadTexture(spriteInimigoDir);
+    UnloadTexture(spriteInimigoEsq);
     UnloadMusicStream(musicaMenu);
     UnloadMusicStream(musicaFase1);
     UnloadMusicStream(musicaFase2);

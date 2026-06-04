@@ -45,18 +45,6 @@ void desenharMapa(char mapa[LINHAS][COLUNAS], Texture2D estrutura, Texture2D esc
     }
 }
 
-// desenha o player
-void desenharPlayer(int linha, int coluna, Texture2D sprite) {
-    DrawTexture(sprite, coluna * TILE_SIZE, linha * TILE_SIZE, WHITE);
-}
 
-// desenha os inimigos na tela
-void desenharInimigos(int inimigoLinha[], int inimigoColuna[], int total, Texture2D sprite) {
-    for (int i = 0; i < total; i++) {
-        int x = inimigoColuna[i] * TILE_SIZE;
-        int y = inimigoLinha[i] * TILE_SIZE;
-        DrawTexture(sprite, x, y, WHITE);
-    }
-}
 
 #endif

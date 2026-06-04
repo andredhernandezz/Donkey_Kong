@@ -1,7 +1,7 @@
-BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
-B............................B
-B..F.............D...........B
-BZZZZZZZZZZZZZZZZHZZ.........B
+BBBBBBBBBBBBBHBBBBBBBBBBBBBBBB
+B............H...............B
+B....E.......S...D...........B
+B....ZZZZZZZZZZZZHZZ.........B
 B................H...........B
 B................H...........B
 B....D...........S....E......B

@@ -14,7 +14,7 @@ B..ZZZZZZZZZZZZZZZZZZZHZZZZZ.B
 B.....................H......B
 B.....................H......B
 B.....E....D.....D....S......B
-B...ZZZZZZZHZZZZZHZZZZZZZZ...B
+B...ZZZZZZZHZZZZZHZZZZZZZ....B
 B..........H.....H...........B
 B..E..D....S.....H...........B
 B.ZZZZHZZZZZ.....S.......D...B
