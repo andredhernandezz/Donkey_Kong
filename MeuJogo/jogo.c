@@ -24,13 +24,27 @@ int main(void)
     //determina os frames per second da tela, nesse caso 60
     SetTargetFPS(60);
 
+    InitAudioDevice();
+    Music musicaMenu  = LoadMusicStream("audio/menu.mp3");
+    Music musicaFase1 = LoadMusicStream("audio/fase1.mp3");
+    Music musicaFase2 = LoadMusicStream("audio/fase2.mp3");
+    PlayMusicStream(musicaMenu);
+
     // carregando a imagem da capa do menu como a variavel background
     Texture2D background = LoadTexture("graphics/capa_menu.png");
 
     // TESTE
 
     // APENAS TEXTE MARIO
-    Texture2D spriteMario = LoadTexture("graphics/mario.pixelart.png");
+    Texture2D spriteMario = LoadTexture("graphics/mario.png");
+
+    Texture2D spriteEstrutura = LoadTexture("graphics/estrutura.png");
+
+    Texture2D spriteEscada = LoadTexture("graphics/escada.png");
+
+    Texture2D spriteInimigo = LoadTexture("graphics/enemy.png");
+
+
 
 
     // TESTE
@@ -117,6 +131,9 @@ int main(void)
                 encontrarPlayer(mapaAtual, &playerLinha, &playerColuna);
                 encontrarInimigos(mapaAtual, inimigoLinha, inimigoColuna, inimigoDirecao, &totalInimigos);
 
+                StopMusicStream(musicaMenu);
+                PlayMusicStream(musicaFase1);
+
                 telaAtual = TELA_JOGO;
             }
             if (CheckCollisionPointRec(mousePos, btnRanking.rect) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
@@ -128,6 +145,9 @@ int main(void)
                 UnloadTexture(btnNovo.texture);
                 UnloadTexture(btnRanking.texture);
                 UnloadTexture(btnSair.texture);
+                UnloadTexture(spriteEscada);
+                UnloadTexture(spriteEstrutura);
+                UnloadTexture(spriteInimigo);
                 return 0;
             }
             break;
@@ -140,19 +160,30 @@ int main(void)
                 break;
             }
 
-            // tela de game over (sÛ conta o timer, depois volta ao menu)
+            // tela de game over (s√≥ conta o timer, depois volta ao menu)
             if (gameOver)
             {
                 timerGameOver++;
-                if (timerGameOver > FPS * 3) telaAtual = TELA_MENU;
+                if (timerGameOver > FPS * 3)
+                {
+                    StopMusicStream(musicaFase1);
+                    StopMusicStream(musicaFase2);
+                    PlayMusicStream(musicaMenu);
+                    telaAtual = TELA_MENU;
+                }
                 break;
             }
-
-            // tela de vitoria (sÛ conta o timer, depois volta ao menu)
+            // tela de vitoria (s√≥ conta o timer, depois volta ao menu)
             if (ganhou)
             {
                 timerGanhou++;
-                if (timerGanhou > FPS * 3) telaAtual = TELA_MENU;
+                if (timerGanhou > FPS * 3)
+                {
+                    StopMusicStream(musicaFase1);
+                    StopMusicStream(musicaFase2);
+                    PlayMusicStream(musicaMenu);
+                    telaAtual = TELA_MENU;
+                }
                 break;
             }
 
@@ -169,12 +200,15 @@ int main(void)
                         mapaAtual = mapa1;
                         playerLinha = 1;
                         playerColuna = 16;
+                        StopMusicStream(musicaFase2);
+                        PlayMusicStream(musicaFase1);
                     }
-                    else if (fase == 2)
-                    {
+                    else if (fase == 2) {
                         carregarMapa(mapa2, "mapa2.txt");
                         mapaAtual = mapa2;
                         encontrarPlayer(mapaAtual, &playerLinha, &playerColuna);
+                        StopMusicStream(musicaFase1);  // ‚Üê adiciona
+                        PlayMusicStream(musicaFase2);
                     }
                     encontrarInimigos(mapaAtual, inimigoLinha, inimigoColuna, inimigoDirecao, &totalInimigos);
                     conta_frames_gravidade = 0;
@@ -184,7 +218,7 @@ int main(void)
                 break;
             }
 
-            // movimentaÁ„o normal
+            // movimenta√ß√£o normal
             moverHorizontal(mapaAtual, &playerLinha, &playerColuna);
             moverVertical(mapaAtual, &playerLinha, playerColuna);
             aplicarGravidade(mapaAtual, &playerLinha, playerColuna, &conta_frames_gravidade);
@@ -213,10 +247,11 @@ int main(void)
             break;
 
         case TELA_PAUSA:
-            // TODO: lÛgica dos botıes de pausa (Continuar / Menu / Sair)
+            // TODO: l√≥gica dos bot√µes de pausa (Continuar / Menu / Sair)
             if (IsKeyPressed(KEY_TAB)) telaAtual = TELA_JOGO;
             if (IsKeyPressed(KEY_M))   telaAtual = TELA_MENU;
-            if (IsKeyPressed(KEY_S)){
+            if (IsKeyPressed(KEY_S))
+            {
                 UnloadTexture(spriteMario);
                 UnloadTexture(background);
                 UnloadTexture(btnNovo.texture);
@@ -231,6 +266,14 @@ int main(void)
             if (IsKeyPressed(KEY_M)) telaAtual = TELA_MENU;
             break;
         }
+
+        if (telaAtual == TELA_MENU)
+            UpdateMusicStream(musicaMenu);
+        else if (fase == 1)
+            UpdateMusicStream(musicaFase1);
+        else if (fase == 2)
+            UpdateMusicStream(musicaFase2);
+
 
         //iniciar desenho
         BeginDrawing();
@@ -250,10 +293,10 @@ int main(void)
             break;
 
         case TELA_JOGO:
-            ClearBackground(BLUE);
-            desenharMapa(mapaAtual);
+            ClearBackground(BLACK);
+            desenharMapa(mapaAtual, spriteEstrutura, spriteEscada, spriteInimigo);
             desenharPlayer(playerLinha, playerColuna, spriteMario);
-            desenharInimigos(inimigoLinha, inimigoColuna, totalInimigos);
+            desenharInimigos(inimigoLinha, inimigoColuna, totalInimigos, spriteInimigo);
 
             if (trocandoFase)
             {
@@ -273,7 +316,7 @@ int main(void)
             break;
 
         case TELA_PAUSA:
-            // TODO: desenhar botıes de pausa
+            // TODO: desenhar bot√µes de pausa
             ClearBackground(BLACK);
             DrawText("PAUSADO", 275, 150, 40, WHITE);
             DrawText("TAB - Continuar\nM - Menu\nS - Sair\n", COLUNAS * TILE_SIZE / 2 - 160, LINHAS * TILE_SIZE / 2 + 20, 20, LIGHTGRAY);
@@ -294,6 +337,13 @@ int main(void)
     UnloadTexture(btnNovo.texture);
     UnloadTexture(btnRanking.texture);
     UnloadTexture(btnSair.texture);
+    UnloadTexture(spriteEscada);
+    UnloadTexture(spriteEstrutura);
+    UnloadTexture(spriteInimigo);
+    UnloadMusicStream(musicaMenu);
+    UnloadMusicStream(musicaFase1);
+    UnloadMusicStream(musicaFase2);
+    CloseAudioDevice();
     CloseWindow();
     return 0;
 }

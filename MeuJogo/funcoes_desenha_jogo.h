@@ -7,7 +7,7 @@
 
 
 // desenha o jogo
-void desenharMapa(char mapa[LINHAS][COLUNAS]) {
+void desenharMapa(char mapa[LINHAS][COLUNAS], Texture2D estrutura, Texture2D escada, Texture2D inimigo) {
 
     for (int i = 0; i < LINHAS; i++) {
         for (int j = 0; j < COLUNAS; j++) {
@@ -18,19 +18,19 @@ void desenharMapa(char mapa[LINHAS][COLUNAS]) {
             switch (mapa[i][j]) {
 
                 case 'Z':
-                    DrawRectangle(x, y, TILE_SIZE, TILE_SIZE, RED);
+                    DrawTexture(estrutura, x, y, WHITE);
                     break;
                 case 'B':
                     DrawRectangle(x, y, TILE_SIZE, TILE_SIZE, DARKBLUE);
                     break;
                 case 'E':
-                    DrawRectangle(x, y, TILE_SIZE, TILE_SIZE, YELLOW);
+                    DrawTexture(inimigo, x, y, WHITE);
                     break;
 
                 case 'S':
                 case 'D':
                 case 'H':
-                    DrawRectangle(x, y, TILE_SIZE, TILE_SIZE, SKYBLUE);
+                    DrawTexture(escada, x, y, WHITE);
                     break;
 
                 case 'F':
@@ -51,14 +51,11 @@ void desenharPlayer(int linha, int coluna, Texture2D sprite) {
 }
 
 // desenha os inimigos na tela
-void desenharInimigos(int inimigoLinha[], int inimigoColuna[], int total) {
-
+void desenharInimigos(int inimigoLinha[], int inimigoColuna[], int total, Texture2D sprite) {
     for (int i = 0; i < total; i++) {
-
         int x = inimigoColuna[i] * TILE_SIZE;
         int y = inimigoLinha[i] * TILE_SIZE;
-
-        DrawRectangle(x, y, TILE_SIZE, TILE_SIZE, YELLOW);
+        DrawTexture(sprite, x, y, WHITE);
     }
 }
 
