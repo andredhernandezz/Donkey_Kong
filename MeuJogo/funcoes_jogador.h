@@ -23,7 +23,6 @@ void encontrarPlayer(char mapa[LINHAS][COLUNAS], PLAYER *p) {
             }
         }
     }
-
     p->direcao = 1;
     p->velY = 0;
     p->contadorGravidade = 0;

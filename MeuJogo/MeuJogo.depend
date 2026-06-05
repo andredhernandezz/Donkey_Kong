@@ -1,9 +1,9 @@
 # depslib dependency file v1.0
-1780672789 source:c:\projetos\meujogo\jogo.c
-	"raylib.h"
-	"button.h"
+1780695997 source:c:\projetos\meujogo\jogo.c
 	<stdio.h>
 	<stdlib.h>
+	"raylib.h"
+	"button.h"
 	"funcoes_desenha_jogo.h"
 	"funcoes_fase.h"
 	"funcoes_inimigos.h"
@@ -12,7 +12,7 @@
 	"constantes.h"
 	"placar.h"
 
-1780671293 c:\projetos\meujogo\button.h
+1780693945 c:\projetos\meujogo\button.h
 	"raylib.h"
 
 1780671293 c:\projetos\meujogo\funcoes_desenha_jogo.h
@@ -25,7 +25,7 @@
 	<stdio.h>
 	"constantes.h"
 
-1780671293 c:\projetos\meujogo\funcoes_inimigos.h
+1780695998 c:\projetos\meujogo\funcoes_inimigos.h
 	"raylib.h"
 	<stdio.h>
 	"funcoes_mapa.h"
@@ -95,12 +95,12 @@
 	<stdio.h>
 	"constantes.h"
 
-1780671293 c:\projetos\meujogo\funcoes_jogador.h
+1780695998 c:\projetos\meujogo\funcoes_jogador.h
 	"raylib.h"
 	<stdio.h>
 	"constantes.h"
 
-1780672705 c:\projetos\meujogo\placar.h
+1780671293 c:\projetos\meujogo\placar.h
 	"raylib.h"
 	<stdio.h>
 	"constantes.h"

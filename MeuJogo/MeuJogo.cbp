@@ -36,6 +36,7 @@
 		<Unit filename="funcoes_desenha_jogo.h" />
 		<Unit filename="funcoes_fase.h" />
 		<Unit filename="funcoes_inimigos.h" />
+		<Unit filename="funcoes_jogador.h" />
 		<Unit filename="funcoes_mapa.h" />
 		<Unit filename="funcoes_movimentacao_jogador.h" />
 		<Unit filename="jogo.c">

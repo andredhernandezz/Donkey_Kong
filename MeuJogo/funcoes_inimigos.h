@@ -14,12 +14,9 @@ typedef struct {
 
 // posicao do inimigos
 void encontrarInimigos(char mapa[LINHAS][COLUNAS], INIMIGO inimigos[], int *total) {
-
     *total = 0;
-
     for (int i = 0; i < LINHAS; i++) {
         for (int j = 0; j < COLUNAS; j++) {
-
             if (mapa[i][j] == 'E') {
 
                 inimigos[*total].linha = i;

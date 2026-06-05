@@ -14,7 +14,6 @@
 typedef struct {
     Rectangle rect;
     Texture2D texture;
-    bool ativo;
 } Botao;
 
 #endif
