@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1780595836 source:c:\projetos\meujogo\jogo.c
+1780672789 source:c:\projetos\meujogo\jogo.c
 	"raylib.h"
 	"button.h"
 	<stdio.h>
@@ -12,26 +12,26 @@
 	"constantes.h"
 	"placar.h"
 
-1780589240 c:\projetos\meujogo\button.h
+1780671293 c:\projetos\meujogo\button.h
 	"raylib.h"
 
-1780589240 c:\projetos\meujogo\funcoes_desenha_jogo.h
-	"raylib.h"
-	<stdio.h>
-	"constantes.h"
-
-1780589240 c:\projetos\meujogo\funcoes_fase.h
+1780671293 c:\projetos\meujogo\funcoes_desenha_jogo.h
 	"raylib.h"
 	<stdio.h>
 	"constantes.h"
 
-1780589240 c:\projetos\meujogo\funcoes_inimigos.h
+1780671293 c:\projetos\meujogo\funcoes_fase.h
+	"raylib.h"
+	<stdio.h>
+	"constantes.h"
+
+1780671293 c:\projetos\meujogo\funcoes_inimigos.h
 	"raylib.h"
 	<stdio.h>
 	"funcoes_mapa.h"
 	"constantes.h"
 
-1780589240 c:\projetos\meujogo\funcoes_mapa.h
+1780671293 c:\projetos\meujogo\funcoes_mapa.h
 	"raylib.h"
 	<stdio.h>
 	"constantes.h"
@@ -41,7 +41,7 @@
 	<stdio.h>
 	"constantes.h"
 
-1780589240 c:\projetos\meujogo\constantes.h
+1780671293 c:\projetos\meujogo\constantes.h
 
 1780560008 source:c:\users\germano\downloads\donkey_kong-6.0\donkey_kong-6.0\meujogo\jogo.c
 	"raylib.h"
@@ -95,12 +95,12 @@
 	<stdio.h>
 	"constantes.h"
 
-1780589240 c:\projetos\meujogo\funcoes_jogador.h
+1780671293 c:\projetos\meujogo\funcoes_jogador.h
 	"raylib.h"
 	<stdio.h>
 	"constantes.h"
 
-1780595824 c:\projetos\meujogo\placar.h
+1780672705 c:\projetos\meujogo\placar.h
 	"raylib.h"
 	<stdio.h>
 	"constantes.h"

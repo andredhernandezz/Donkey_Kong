@@ -206,7 +206,12 @@ int main(void)
                     nomeJogador[0] = '\0';
                     letrasContadas = 0;
                     // Vai para a tela de registro
-                    telaAtual = TELA_INPUT_NOME;
+                    if (deveEntrarNoRanking((int)tempoDeJogo)){
+                        telaAtual = TELA_INPUT_NOME;
+                    }
+                    else {
+                        telaAtual = TELA_RANKING;
+                    }
 
                 }
                 break;
