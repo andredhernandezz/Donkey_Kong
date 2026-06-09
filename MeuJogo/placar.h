@@ -56,6 +56,21 @@ void limparPlacar(void) {
     remove("placar.bin");
 }
 
+// FUNCAO PARA VERIFICAR SE O TEMPO DO JOGADOR ESTA NO TOP 10 DO RANKING
+int deveEntrarNoRanking(int tempo){
+    TIPO_PLACAR placar[10];
+    int qtd = 0;
+    FILE *arq = fopen("placar.bin", "rb");
+    if (arq != NULL){
+        qtd = fread(placar, sizeof(TIPO_PLACAR), 10, arq);
+        fclose(arq);
+    }
+
+    if (qtd < 10){
+        return 1;
+    }
+    return tempo < placar[qtd-1].time;
+}
 
 
 #endif

@@ -148,6 +148,11 @@ int main(void)
                 UnloadTexture(spriteEstrutura);
                 UnloadTexture(spriteInimigoDir);
                 UnloadTexture(spriteInimigoEsq);
+                UnloadMusicStream(musicaMenu);
+                UnloadMusicStream(musicaFase1);
+                UnloadMusicStream(musicaFase2);
+                UnloadMusicStream(musicaFase3);
+                CloseAudioDevice();
                 return 0;
             }
             break;
@@ -190,10 +195,15 @@ int main(void)
                     StopMusicStream(musicaFase2);
                     StopMusicStream(musicaFase3);
                     PlayMusicStream(musicaMenu);
-                    nomeJogador[0] = '\0';
-                    letrasContadas = 0;
-                    // Vai para a tela de registro
-                    telaAtual = TELA_INPUT_NOME;
+                    if (deveEntrarNoRanking((int) tempoDeJogo)){
+                        nomeJogador[0] = '\0';
+                        letrasContadas = 0;
+                        // Vai para a tela de registro
+                        telaAtual = TELA_INPUT_NOME;
+                    }
+                    else {
+                        telaAtual = TELA_RANKING;
+                    }
 
                 }
                 break;
@@ -289,7 +299,7 @@ int main(void)
             break;
 
         case TELA_PAUSA:
-            // TODO: lógica dos botões de pausa (Continuar / Menu / Sair)
+            // lógica dos botões de pausa (Continuar / Menu / Sair)
             if (IsKeyPressed(KEY_TAB)) telaAtual = TELA_JOGO; // se o usuario clica a tecla 'TAB' retorna para a tela do jogo
             if (IsKeyPressed(KEY_M))   telaAtual = TELA_MENU; // se o usuario clica a tecla 'M' volta para a tela do menu
             if (IsKeyPressed(KEY_S)) // se o usuario clica a tecla 'S', encerra o jogo e libera a memoria de todas as imagens e audios carregados
@@ -424,7 +434,7 @@ int main(void)
             break;
 
         case TELA_PAUSA:
-            // TODO: desenhar botões de pausa
+            // desenhar botões de pausa
             ClearBackground(BLACK);
             DrawText("PAUSADO", 275, 150, 40, WHITE);
             DrawText("TAB - Continuar\nM - Menu\nS - Sair\n", COLUNAS * TILE_SIZE / 2 - 160, LINHAS * TILE_SIZE / 2 + 20, 20, LIGHTGRAY);
@@ -486,4 +496,3 @@ int main(void)
     CloseWindow();
     return 0;
 }
-

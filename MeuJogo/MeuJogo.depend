@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1780695997 source:c:\projetos\meujogo\jogo.c
+1781041290 source:c:\projetos\meujogo\jogo.c
 	<stdio.h>
 	<stdlib.h>
 	"raylib.h"
@@ -100,7 +100,7 @@
 	<stdio.h>
 	"constantes.h"
 
-1780671293 c:\projetos\meujogo\placar.h
+1781040858 c:\projetos\meujogo\placar.h
 	"raylib.h"
 	<stdio.h>
 	"constantes.h"
