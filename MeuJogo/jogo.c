@@ -347,10 +347,10 @@ int main(void)
                 chave = GetCharPressed();
             }
 
-            if (IsKeyPressed(KEY_BACKSPACE)) // caso o usuario pressione a tecla de espaco
+            if (IsKeyPressed(KEY_BACKSPACE)) // caso o usuario pressione a tecla backspace
             {
-                letrasContadas--; //apaga a ultima letra
-                if (letrasContadas < 0) letrasContadas = 0; // para caso o usuario aperte espaco antes de digitar uma letra, assim o contador nunca ficará negativo
+                letrasContadas--; // decrementa a variavel que conta a quantidade de letras
+                if (letrasContadas < 0) letrasContadas = 0; // para caso o usuario aperte backspace antes de digitar uma letra, assim o contador nunca ficará negativo
                 nomeJogador[letrasContadas] = '\0'; // termina a string com '\0'
             }
 
@@ -399,7 +399,7 @@ int main(void)
             DrawTextEx(fonte, "TAB     Pausar",    (Vector2){50, 94},  16, 1, WHITE);
             DrawTextEx(fonte, "ESC     Fechar",    (Vector2){50, 116}, 16, 1, WHITE);
             DrawTextEx(fonte, "F1      Tela Cheia",(Vector2){50, 138}, 16, 1, WHITE);
-            DrawTextEx(fonte, "BACKSPACE  Pular",(Vector2){50, 160}, 16, 1, WHITE);
+            DrawTextEx(fonte, "ESPACO  Pular",(Vector2){50, 160}, 16, 1, WHITE);
             // desenho dos botoes e aplica o efeito de hover (caso o mouse passe por cima da area indicada, muda a cor)
             DrawTexture(btnNovo.texture, btnNovo.rect.x, btnNovo.rect.y,
                         CheckCollisionPointRec(mousePos, btnNovo.rect) ? GRAY : WHITE);
@@ -441,7 +441,7 @@ int main(void)
             break;
 
         case TELA_RANKING:
-            // TODO: exibir placar.bin
+            // exibir placar.bin
             TIPO_PLACAR placar[10];
             int qtd = 0;
             FILE *arq = fopen("placar.bin", "rb");
