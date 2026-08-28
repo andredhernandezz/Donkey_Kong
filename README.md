@@ -3,7 +3,6 @@
 Jogo em C inspirado no clássico *Donkey Kong*, desenvolvido como trabalho final da disciplina **Algoritmos e Programação (INF01202)** no Instituto de Informática da UFRGS, utilizando a biblioteca **Raylib**.
 
 **Autores:** André Delgado Hernandez e Germano Garlet de Bortoli
-**Porto Alegre, 2026**
 
 ## Sobre o jogo
 
